@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "LeetCode 复习助手",
+  "version": "0.2.0",
+  "description": "同步力扣中国站已通过题目，并为复习计划提供本地题库。",
+  "action": {
+    "default_title": "LeetCode 复习助手",
+    "default_popup": "src/popup/index.html",
+    "default_icon": "img/icon-128.png"
+  },
+  "icons": {
+    "128": "img/icon-128.png"
+  },
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "alarms",
+    "notifications",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://leetcode.cn/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://leetcode.cn/*"
+      ],
+      "js": [
+        "src/content-script.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
