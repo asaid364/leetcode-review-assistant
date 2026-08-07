@@ -32,3 +32,10 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+doc/
+img/
+scripts/
+test/
+AI_HANDOFF.md
+package.json
