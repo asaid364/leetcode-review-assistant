@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LeetCode 复习助手</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <h1>LeetCode 复习</h1>
+        <p id="account-name" class="account-name">尚未连接账号</p>
+      </div>
+      <span id="connection-badge" class="badge badge-neutral">未连接</span>
+    </header>
+
+    <main>
+      <section class="privacy-band" aria-labelledby="privacy-title">
+        <div class="section-heading"><h2 id="privacy-title">数据使用说明</h2><span id="privacy-status" class="secondary-text">需要确认</span></div>
+        <p class="secondary-text">插件只读取力扣账号最小标识和已通过题目，用于建立本地题库与复习计划；不会要求或保存密码、Cookie、令牌或提交代码。</p>
+        <button id="privacy-consent-button" class="button button-secondary" type="button">阅读并同意后连接账号</button>
+      </section>
+      <section class="status-band" aria-labelledby="sync-title">
+        <div class="section-heading">
+          <h2 id="sync-title">题目同步</h2>
+          <span id="question-count" class="metric">0 题</span>
+        </div>
+        <p id="sync-message" class="status-message" aria-live="polite">
+          连接当前登录的力扣账号后开始同步。
+        </p>
+        <button id="retry-button" class="button button-secondary" type="button" hidden>重试上次操作</button>
+        <div id="sync-result" class="sync-result" hidden>
+          <span><strong id="added-count">0</strong> 新增</span>
+          <span><strong id="updated-count">0</strong> 更新</span>
+          <span><strong id="unchanged-count">0</strong> 未变化</span>
+          <span><strong id="failed-count">0</strong> 失败</span>
+        </div>
+        <div id="conflict-notice" class="notice notice-warning" hidden></div>
+        <div class="primary-actions">
+          <button id="app-button" class="button button-primary button-wide" type="button">
+            打开复习工作台
+          </button>
+          <button id="connect-button" class="button button-primary" type="button">
+            连接当前账号
+          </button>
+          <button id="sync-button" class="button button-primary" type="button" hidden>
+            立即同步
+          </button>
+          <button id="open-button" class="button button-secondary" type="button">
+            打开力扣
+          </button>
+        </div>
+      </section>
+
+      <section class="settings-band" aria-labelledby="auto-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="auto-title">自动同步</h2>
+            <p id="next-sync" class="secondary-text">未启用</p>
+          </div>
+          <label class="switch">
+            <input id="auto-sync-toggle" type="checkbox" />
+            <span class="switch-track" aria-hidden="true"></span>
+            <span class="sr-only">启用自动同步</span>
+          </label>
+        </div>
+        <label class="field-label" for="sync-interval">同步间隔</label>
+        <select id="sync-interval" class="select-control">
+          <option value="360">每 6 小时</option>
+          <option value="720">每 12 小时</option>
+          <option value="1440">每 24 小时</option>
+        </select>
+        <p class="secondary-text">仅在已打开力扣标签页时执行。</p>
+      </section>
+
+      <section class="account-band" aria-labelledby="account-title">
+        <div class="section-heading">
+          <h2 id="account-title">账号管理</h2>
+          <button id="unlink-button" class="button button-danger-text" type="button" hidden>
+            解绑
+          </button>
+        </div>
+        <p class="secondary-text">插件不会保存力扣密码、Cookie 或提交代码。</p>
+      </section>
+    </main>
+
+    <dialog id="privacy-dialog" class="dialog">
+      <form method="dialog">
+        <h2>数据读取与使用</h2>
+        <p id="privacy-detail-copy">连接前请确认以下范围。</p>
+        <ul id="privacy-data-list"></ul>
+        <label class="consent-line"><input id="privacy-consent-check" type="checkbox" />我已阅读并同意仅在本机使用上述数据</label>
+        <div class="dialog-actions">
+          <button id="privacy-consent-confirm" class="button button-primary" value="confirm" disabled>同意并继续</button>
+          <button class="button button-quiet" value="cancel">取消</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="unlink-dialog" class="dialog">
+      <form method="dialog">
+        <h2>解绑当前账号</h2>
+        <p>保留数据可在重新连接同一账号后继续使用。删除数据会清除题库和同步记录。</p>
+        <div class="dialog-actions">
+          <button id="unlink-keep" class="button button-secondary" value="keep">
+            解绑并保留
+          </button>
+          <button id="unlink-delete" class="button button-danger" value="delete">
+            解绑并删除
+          </button>
+          <button class="button button-quiet" value="cancel">取消</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>

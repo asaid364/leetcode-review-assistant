@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LeetCode 复习工作台</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#today" aria-label="LeetCode 复习工作台首页">
+        <span class="brand-mark">LC</span>
+        <span><strong>复习工作台</strong><small>数据仅保存在本机</small></span>
+      </a>
+      <nav class="tabs" aria-label="主要页面">
+        <button class="tab is-active" data-view="today" type="button">今日复习</button>
+        <button class="tab" data-view="progress" type="button">复习进度</button>
+        <button class="tab" data-view="library" type="button">我的题库</button>
+        <button class="tab" data-view="settings" type="button">计划设置</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="today-view" class="view" aria-labelledby="today-title">
+        <div class="page-heading">
+          <div><p class="eyebrow" id="today-date"></p><h1 id="today-title">今日复习</h1></div>
+          <button id="plan-pause-button" class="button button-secondary" type="button"></button>
+        </div>
+        <div class="metric-band metric-band-five" aria-label="今日进度">
+          <div><span id="today-total">0</span><small>今日题数</small></div>
+          <div><span id="today-completed">0</span><small>已完成</small></div>
+          <div><span id="today-rate">0%</span><small>完成进度</small></div>
+          <div><span id="today-capacity">5 题</span><small>今日容量</small></div>
+          <div><span id="today-estimate">0 分钟</span><small>剩余预计</small></div>
+        </div>
+        <div class="progress-track" aria-label="今日完成进度"><span id="today-progress-bar"></span></div>
+        <div id="feedback-result" class="result-banner" hidden>
+          <div><strong id="feedback-result-title"></strong><span id="feedback-result-next"></span></div>
+          <button id="feedback-result-close" class="icon-button" type="button" title="关闭" aria-label="关闭反馈结果">&#215;</button>
+        </div>
+        <div id="plan-notice" class="notice" hidden></div>
+        <div id="today-list" class="task-list" aria-live="polite"></div>
+        <div id="today-empty" class="empty-state" hidden>
+          <h2 id="today-empty-title">今天没有待复习题目</h2>
+          <p id="today-empty-copy">到期任务会在此处按优先级出现。</p>
+          <div class="empty-actions">
+            <button class="button button-secondary" data-view-link="progress" type="button">查看后续安排</button>
+            <button class="button button-quiet" data-view-link="library" type="button">整理个人题库</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="progress-view" class="view" aria-labelledby="progress-title" hidden>
+        <div class="page-heading">
+          <div><p class="eyebrow">最近 7 天与未来 14 天</p><h1 id="progress-title">复习进度</h1></div>
+          <button id="progress-refresh" class="icon-button" type="button" title="刷新进度" aria-label="刷新进度">&#8635;</button>
+        </div>
+        <div class="metric-band" aria-label="复习表现">
+          <div><span id="progress-today">0%</span><small>今日完成率</small></div>
+          <div><span id="progress-week">0%</span><small>本周完成率</small></div>
+          <div><span id="progress-streak">0 天</span><small>连续完成</small></div>
+          <div><span id="progress-improved">0</span><small>近 30 天提升</small></div>
+        </div>
+        <div class="pressure-band">
+          <div><strong id="due-overdue">0</strong><span>已经逾期</span></div>
+          <div><strong id="due-upcoming">0</strong><span>7 天内到期</span></div>
+          <p id="pressure-copy"></p>
+        </div>
+        <section class="content-section" aria-labelledby="calendar-title">
+          <div class="section-heading"><h2 id="calendar-title">复习日历</h2><div class="legend"><span class="dot completed"></span>已完成<span class="dot overdue"></span>未完成<span class="dot future"></span>未来任务</div></div>
+          <div id="review-calendar" class="calendar-grid"></div>
+        </section>
+        <section class="content-section" aria-labelledby="forecast-title">
+          <div class="section-heading"><h2 id="forecast-title">未来任务量</h2><span>柱长按 14 天峰值显示</span></div>
+          <div id="forecast-list" class="forecast-list"></div>
+        </section>
+        <div class="split-sections">
+          <section class="content-section" aria-labelledby="mastery-title">
+            <div class="section-heading"><h2 id="mastery-title">掌握状态</h2></div>
+            <div id="mastery-list" class="distribution-list"></div>
+          </section>
+          <section class="content-section" aria-labelledby="weakness-title">
+            <div class="section-heading"><h2 id="weakness-title">薄弱分布</h2><select id="distribution-mode" aria-label="分布维度"><option value="difficulty">按难度</option><option value="tags">按标签</option></select></div>
+            <div id="weakness-list" class="distribution-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="library-view" class="view" aria-labelledby="library-title" hidden>
+        <div class="page-heading">
+          <div><p class="eyebrow">本地数据</p><h1 id="library-title">我的题库</h1></div>
+          <span id="library-count" class="total-count">0 道题</span>
+        </div>
+        <div class="library-controls">
+          <label class="search-field"><span class="sr-only">搜索题名或题号</span><input id="library-search" type="search" placeholder="搜索题名或题号" autocomplete="off" /></label>
+          <div class="filter-grid">
+            <label>是否复习<select id="filter-participation"><option value="all">全部</option><option value="in">复习中</option><option value="out">未参与</option></select></label>
+            <label>复习状态<select id="filter-status"><option value="">全部状态</option><option value="pending">待确认</option><option value="reviewing">复习中</option><option value="paused">暂停</option><option value="graduated">已毕业</option><option value="ignored">忽略</option></select></label>
+            <label>掌握程度<select id="filter-mastery"><option value="">全部程度</option><option value="unassessed">未评估</option><option value="again">不会</option><option value="hard">模糊</option><option value="good">掌握</option><option value="easy">熟练</option></select></label>
+            <label>难度<select id="filter-difficulty"><option value="">全部难度</option><option value="EASY">简单</option><option value="MEDIUM">中等</option><option value="HARD">困难</option><option value="UNKNOWN">未知</option></select></label>
+            <label>标签<select id="filter-tag"><option value="">全部标签</option></select></label>
+            <label>到期状态<select id="filter-overdue"><option value="all">全部</option><option value="overdue">已逾期</option><option value="not_overdue">未逾期</option></select></label>
+            <label>排序<select id="library-sort"><option value="acceptedAt:desc">最近完成优先</option><option value="acceptedAt:asc">较早完成优先</option><option value="lastReviewedAt:desc">最近复习优先</option><option value="lastReviewedAt:asc">较久未复习优先</option><option value="dueAt:asc">下次复习较早</option><option value="dueAt:desc">下次复习较晚</option></select></label>
+          </div>
+        </div>
+        <div id="bulk-bar" class="bulk-bar" hidden>
+          <strong><span id="selected-count">0</span> 项已选择</strong>
+          <select id="bulk-action" aria-label="批量操作"><option value="">选择操作</option><option value="join">加入复习</option><option value="remove">移出复习</option><option value="paused">暂停</option><option value="graduated">设为已毕业</option><option value="ignored">设为忽略</option><option value="focus">标为重点</option><option value="unfocus">取消重点</option><option value="interview_selected">设为冲刺题单</option></select>
+          <button id="bulk-apply" class="button button-primary" type="button">应用</button>
+          <button id="selection-clear" class="button button-quiet" type="button">清除选择</button>
+        </div>
+        <div class="list-header"><label><input id="select-page" type="checkbox" /> 选择本页</label><span>状态与计划</span></div>
+        <div id="library-list" class="question-list" aria-live="polite"></div>
+        <div id="library-empty" class="empty-state" hidden><h2>没有匹配的题目</h2><p>调整搜索词或筛选条件后重试。</p></div>
+        <div class="pagination">
+          <button id="page-prev" class="icon-button" type="button" title="上一页" aria-label="上一页">&#8592;</button><span id="page-label">第 1 / 1 页</span><button id="page-next" class="icon-button" type="button" title="下一页" aria-label="下一页">&#8594;</button>
+        </div>
+      </section>
+
+      <section id="settings-view" class="view" aria-labelledby="settings-title" hidden>
+        <div class="page-heading"><div><p class="eyebrow">确定性调度</p><h1 id="settings-title">计划设置</h1></div></div>
+        <form id="settings-form">
+          <fieldset class="settings-group">
+            <legend>每日容量</legend>
+            <div class="segmented"><label><input type="radio" name="capacityMode" value="count" />按题数</label><label><input type="radio" name="capacityMode" value="time" />按时间</label></div>
+            <div class="inline-fields"><label>每日题数<input id="question-limit" type="number" min="1" max="50" step="1" /></label><label>每日分钟<input id="minutes-limit" type="number" min="10" max="240" step="5" /></label></div>
+          </fieldset>
+          <fieldset class="settings-group"><legend>新同步题目</legend><select id="new-question-mode"><option value="pending">进入待确认</option><option value="reviewing">自动加入复习</option></select></fieldset>
+          <fieldset class="settings-group">
+            <legend>每日提醒</legend>
+            <label class="toggle-line"><input id="reminder-enabled" type="checkbox" /><span>开启复习提醒</span></label>
+            <label class="compact-field">提醒时间<input id="reminder-time" type="time" step="60" /></label>
+          </fieldset>
+          <fieldset class="settings-group">
+            <legend>复习目标</legend>
+            <div class="segmented segmented-three"><label><input type="radio" name="reviewGoal" value="daily" />日常巩固</label><label><input type="radio" name="reviewGoal" value="weak" />薄弱优先</label><label><input type="radio" name="reviewGoal" value="interview" />面试冲刺</label></div>
+            <div id="interview-settings" class="interview-settings" hidden>
+              <div class="inline-fields"><label>面试日期<input id="interview-date" type="date" /></label><label>冲刺范围<select id="interview-scope"><option value="focus">重点题</option><option value="tag">指定标签</option><option value="difficulty">指定难度</option><option value="selected">手动题单</option></select></label></div>
+              <label>范围值<input id="interview-values" type="text" placeholder="多个值用逗号分隔" /></label>
+              <label class="check-line"><input id="capacity-confirmed" type="checkbox" />确认冲刺计划仍使用当前每日容量</label>
+            </div>
+          </fieldset>
+          <div class="form-actions"><button class="button button-primary" type="submit">保存并重排计划</button></div>
+        </form>
+        <section class="audit-section" aria-labelledby="audit-title"><h2 id="audit-title">最近计划变更</h2><div id="audit-list" class="audit-list"></div></section>
+        <section class="privacy-section" aria-labelledby="data-title">
+          <div class="section-heading"><h2 id="data-title">数据控制</h2><span class="secondary-text">数据仅保存在本机</span></div>
+          <p class="secondary-text">可随时导出题库、复习记录和笔记。删除操作会清除个人数据且不可恢复。</p>
+          <label class="toggle-line"><input id="optional-statistics-enabled" type="checkbox" /><span>启用非必要统计（连续天数、薄弱分布和提升数量）</span></label>
+          <div class="data-actions"><button id="export-data-button" class="button button-secondary" type="button">导出个人数据</button><button id="delete-data-button" class="button button-danger" type="button">删除个人数据</button></div>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="question-dialog" class="detail-dialog">
+      <div class="dialog-header"><div><p id="detail-number" class="eyebrow"></p><h2 id="detail-title"></h2></div><button id="detail-close" class="icon-button" type="button" title="关闭" aria-label="关闭题目详情">&#215;</button></div>
+      <div id="detail-meta" class="detail-meta"></div>
+      <div class="dialog-actions"><button id="detail-open" class="button button-primary" type="button">前往 LeetCode</button><label>调整状态<select id="detail-status"></select></label></div>
+      <section class="dialog-section"><h3>个人复习笔记</h3><textarea id="detail-note" maxlength="5000" rows="7" placeholder="记录错误原因、关键思路或容易遗漏的边界条件"></textarea><div class="note-actions"><span id="note-count">0 / 5000</span><button id="note-save" class="button button-secondary" type="button">保存笔记</button></div></section>
+      <section class="dialog-section"><h3>复习历史</h3><div id="detail-history" class="history-list"></div></section>
+    </dialog>
+    <dialog id="calendar-dialog" class="detail-dialog calendar-dialog">
+      <div class="dialog-header"><div><p id="calendar-detail-status" class="eyebrow"></p><h2 id="calendar-detail-title"></h2></div><button id="calendar-detail-close" class="icon-button" type="button" title="关闭" aria-label="关闭日期明细">&#215;</button></div>
+      <div id="calendar-detail-summary" class="calendar-detail-summary"></div>
+      <div id="calendar-detail-list" class="calendar-detail-list"></div>
+    </dialog>
+    <dialog id="delete-data-dialog" class="detail-dialog delete-data-dialog">
+      <div class="dialog-header"><div><p class="eyebrow">不可逆操作</p><h2>删除个人数据</h2></div><button id="delete-data-close" class="icon-button" type="button" title="关闭" aria-label="关闭删除确认">&#215;</button></div>
+      <section class="dialog-section"><p>这会删除本机题库、复习记录、笔记、计划、同步历史和账号关联，且无法恢复。请输入 <strong>DELETE</strong> 以确认。</p><input id="delete-data-confirmation" type="text" autocomplete="off" spellcheck="false" aria-label="输入 DELETE 确认删除" /></section>
+      <div class="dialog-actions"><button id="delete-data-confirm" class="button button-danger" type="button" disabled>永久删除</button><button id="delete-data-cancel" class="button button-quiet" type="button">取消</button></div>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-retry" class="button button-secondary" type="button" hidden>重试</button></div>
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>
