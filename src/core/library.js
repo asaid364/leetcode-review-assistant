@@ -256,6 +256,34 @@ export function updateNewQuestionMode(state, mode) {
   };
 }
 
+export function updateAutoJoinReacceptedQuestions(state, enabled) {
+  if (typeof enabled !== "boolean") {
+    throw new AppError(
+      "INVALID_AUTO_JOIN_REACCEPTED_QUESTIONS",
+      "再次通过题目的自动加入设置必须为布尔值",
+    );
+  }
+  return {
+    ...state,
+    settings: { ...state.settings, autoJoinReacceptedQuestions: enabled },
+  };
+}
+
+export function autoJoinReacceptedQuestion(question, { now, deviceId }) {
+  if (question?.review?.status !== "pending") {
+    return question;
+  }
+  const transitioned = transitionReview(question.review, "reviewing", now);
+  return {
+    ...question,
+    review: {
+      ...transitioned,
+      dueAt: question.review.dueAt ?? transitioned.dueAt,
+      updatedByDeviceId: deviceId,
+    },
+  };
+}
+
 export function updateQuestionNote(state, key, note, { now }) {
   const question = state.questions?.[key];
   if (!question) {

@@ -1,8 +1,9 @@
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 export const DEFAULT_AUTO_SYNC_INTERVAL_MINUTES = 360;
 
 export const DEFAULT_REVIEW_SETTINGS = Object.freeze({
   newQuestionMode: "pending",
+  autoJoinReacceptedQuestions: false,
   dailyCapacityMode: "count",
   dailyQuestionLimit: 5,
   dailyMinutesLimit: 30,
@@ -120,6 +121,8 @@ export function normalizeState(stored, { now, deviceId }) {
   const settings = {
     ...initial.settings,
     ...stored.settings,
+    autoJoinReacceptedQuestions:
+      stored.settings?.autoJoinReacceptedQuestions === true,
     interview: {
       ...initial.settings.interview,
       ...(stored.settings?.interview ?? {}),

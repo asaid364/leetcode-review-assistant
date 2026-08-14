@@ -1,4 +1,5 @@
 import { AppError } from "./errors.js";
+import { autoJoinReacceptedQuestion } from "./library.js";
 
 const SOURCE_SITE = "leetcode.cn";
 const VALID_DIFFICULTIES = new Set(["EASY", "MEDIUM", "HARD", "UNKNOWN"]);
@@ -112,6 +113,23 @@ function sourceChanged(existing, remote) {
   return JSON.stringify(comparableSource(existing)) !== JSON.stringify(comparableSource(remote));
 }
 
+function validTimestamp(value) {
+  if (typeof value !== "string" || !value.trim()) {
+    return null;
+  }
+  const timestamp = new Date(value).valueOf();
+  return Number.isFinite(timestamp) ? timestamp : null;
+}
+
+function isReacceptedQuestion(existing, remote, recentAcceptedAvailable) {
+  if (!recentAcceptedAvailable || remote.acceptedAtSource !== "recent_accepted_submission") {
+    return false;
+  }
+  const acceptedAt = validTimestamp(remote.acceptedAt);
+  const lastSourceSeenAt = validTimestamp(existing.lastSourceSeenAt);
+  return acceptedAt !== null && lastSourceSeenAt !== null && acceptedAt > lastSourceSeenAt;
+}
+
 function createReviewState(mode, syncedAt, deviceId) {
   return {
     status: mode === "reviewing" ? "reviewing" : "pending",
@@ -163,6 +181,8 @@ export function mergeRemoteSnapshot(state, snapshot, { syncedAt }) {
     added: 0,
     updated: 0,
     unchanged: 0,
+    reaccepted: 0,
+    autoJoinedReview: 0,
     failed: Array.isArray(snapshot.failures) ? snapshot.failures.length : 0,
     conflicts: 0,
     warnings: Array.isArray(snapshot.warnings) ? [...snapshot.warnings] : [],
@@ -232,11 +252,15 @@ export function mergeRemoteSnapshot(state, snapshot, { syncedAt }) {
         remote.acceptedAt ?? existing.planningBaselineAt ?? existing.firstSyncedAt ?? syncedAt,
     };
     const changed = sourceChanged(existing, mergedRemote) || existing.key !== remote.key;
-    if (existingKey !== remote.key) {
-      delete nextQuestions[existingKey];
+    const reaccepted = isReacceptedQuestion(
+      existing,
+      remote,
+      result.warnings.length === 0,
+    );
+    if (reaccepted) {
+      result.reaccepted += 1;
     }
-
-    nextQuestions[remote.key] = {
+    const mergedQuestion = {
       ...existing,
       ...mergedRemote,
       key: remote.key,
@@ -249,6 +273,21 @@ export function mergeRemoteSnapshot(state, snapshot, { syncedAt }) {
       note: existing.note ?? "",
       remoteConflict: null,
     };
+    const autoJoinedQuestion =
+      reaccepted && state.settings.autoJoinReacceptedQuestions === true
+        ? autoJoinReacceptedQuestion(mergedQuestion, {
+            now: syncedAt,
+            deviceId: state.device.id,
+          })
+        : mergedQuestion;
+    if (autoJoinedQuestion !== mergedQuestion) {
+      result.autoJoinedReview += 1;
+    }
+    if (existingKey !== remote.key) {
+      delete nextQuestions[existingKey];
+    }
+
+    nextQuestions[remote.key] = autoJoinedQuestion;
 
     if (changed) {
       result.updated += 1;

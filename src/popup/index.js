@@ -9,6 +9,7 @@ const elements = {
   updatedCount: document.querySelector("#updated-count"),
   unchangedCount: document.querySelector("#unchanged-count"),
   failedCount: document.querySelector("#failed-count"),
+  autoJoinedReview: document.querySelector("#auto-joined-review"),
   conflictNotice: document.querySelector("#conflict-notice"),
   appButton: document.querySelector("#app-button"),
   connectButton: document.querySelector("#connect-button"),
@@ -90,6 +91,7 @@ function setBadge(status) {
 function renderResult(result) {
   if (!result) {
     elements.syncResult.hidden = true;
+    elements.autoJoinedReview.hidden = true;
     return;
   }
   elements.syncResult.hidden = false;
@@ -97,6 +99,9 @@ function renderResult(result) {
   elements.updatedCount.textContent = String(result.updated ?? 0);
   elements.unchangedCount.textContent = String(result.unchanged ?? 0);
   elements.failedCount.textContent = String(result.failed ?? 0);
+  const autoJoinedReview = Number(result.autoJoinedReview) || 0;
+  elements.autoJoinedReview.hidden = autoJoinedReview === 0;
+  elements.autoJoinedReview.textContent = `自动加入复习 ${autoJoinedReview} 题`;
 }
 
 function render(state) {

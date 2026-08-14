@@ -9,6 +9,7 @@ import { recordSyncFailure, synchronize } from "./core/sync-service.js";
 import {
   getLibraryFacets,
   queryLibrary,
+  updateAutoJoinReacceptedQuestions,
   updateNewQuestionMode,
   updateQuestionNote,
   updateQuestions,
@@ -246,6 +247,12 @@ async function updateReviewSettings(values) {
     let updated = state;
     if (values.newQuestionMode !== undefined) {
       updated = updateNewQuestionMode(updated, values.newQuestionMode);
+    }
+    if (values.autoJoinReacceptedQuestions !== undefined) {
+      updated = updateAutoJoinReacceptedQuestions(
+        updated,
+        values.autoJoinReacceptedQuestions,
+      );
     }
     return updatePlanSettings(updated, values, { now });
   });

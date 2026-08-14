@@ -12,6 +12,7 @@
 
 body {
   width: 368px;
+  max-width: 100%;
   min-height: 520px;
   margin: 0;
   background: #f7f8fa;
@@ -161,6 +162,14 @@ section {
   color: #202124;
   font-size: 16px;
   font-variant-numeric: tabular-nums;
+}
+
+.sync-highlight {
+  margin-top: 10px;
+  color: #0f6b4a;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.45;
 }
 
 .notice {

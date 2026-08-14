@@ -11,7 +11,7 @@ const elements = Object.fromEntries(
     "filter-difficulty", "filter-tag", "filter-overdue", "library-sort", "library-count",
     "library-list", "library-empty", "bulk-bar", "bulk-action", "bulk-apply",
     "selected-count", "selection-clear", "select-page", "page-prev", "page-next", "page-label",
-    "settings-form", "question-limit", "minutes-limit", "new-question-mode",
+    "settings-form", "question-limit", "minutes-limit", "new-question-mode", "auto-join-reaccepted-questions",
     "reminder-enabled", "reminder-time", "interview-settings", "interview-date",
     "interview-scope", "interview-values", "capacity-confirmed", "audit-list",
     "optional-statistics-enabled", "export-data-button", "delete-data-button",
@@ -442,6 +442,7 @@ function renderSettings(settings) {
   elements.question_limit.value = settings.dailyQuestionLimit;
   elements.minutes_limit.value = settings.dailyMinutesLimit;
   elements.new_question_mode.value = settings.newQuestionMode;
+  elements.auto_join_reaccepted_questions.checked = Boolean(settings.autoJoinReacceptedQuestions);
   elements.reminder_enabled.checked = Boolean(settings.reminderEnabled);
   elements.reminder_time.value = settings.reminderTime ?? "20:00";
   elements.reminder_time.disabled = !settings.reminderEnabled;
@@ -713,6 +714,7 @@ elements.settings_form.addEventListener("submit", async (event) => {
         dailyQuestionLimit: Number(elements.question_limit.value),
         dailyMinutesLimit: Number(elements.minutes_limit.value),
         newQuestionMode: elements.new_question_mode.value,
+        autoJoinReacceptedQuestions: elements.auto_join_reaccepted_questions.checked,
         reminderEnabled: elements.reminder_enabled.checked,
         reminderTime: elements.reminder_time.value || "20:00",
         reviewGoal,
