@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LeetCode 复习助手隐私政策</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: #1f2937;
+      background: #f8fafc;
+    }
+
+    body {
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 64px;
+    }
+
+    article {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 36px;
+      box-shadow: 0 16px 40px rgb(15 23 42 / 8%);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.25;
+    }
+
+    h2 {
+      margin: 32px 0 12px;
+      font-size: 20px;
+      line-height: 1.35;
+      color: #111827;
+    }
+
+    p {
+      margin: 12px 0;
+    }
+
+    ul {
+      margin: 12px 0;
+      padding-left: 24px;
+    }
+
+    .meta {
+      margin: 0 0 28px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      background: #f1f5f9;
+      border-radius: 4px;
+      padding: 2px 5px;
+    }
+
+    @media (max-width: 640px) {
+      main {
+        padding: 24px 12px 40px;
+      }
+
+      article {
+        padding: 24px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <article>
+      <h1>LeetCode 复习助手隐私政策</h1>
+      <p class="meta">版本：0.2.0；最后更新：2026-08-14</p>
+
+      <h2>概述</h2>
+      <p>LeetCode 复习助手是一款浏览器扩展，用于帮助用户基于力扣中国站（leetcode.cn）的已通过题目建立本地题库、生成复习计划和管理复习进度。</p>
+      <p>本扩展不是力扣中国站（leetcode.cn）的官方产品，也不代表与力扣中国站存在从属、授权或合作关系。用户使用本扩展时仍应遵守力扣中国站的服务条款。</p>
+
+      <h2>读取的数据</h2>
+      <p>连接账号前，扩展会向用户展示数据使用说明，并要求用户同意读取范围。扩展只读取：</p>
+      <ul>
+        <li>力扣中国站当前登录账号的最小标识，包括用户 slug、用户名和展示名称。</li>
+        <li>已通过题目的题号、标题、难度、标签、付费标记和可获得的近期完成时间。</li>
+      </ul>
+
+      <h2>数据用途</h2>
+      <p>上述数据仅用于：</p>
+      <ul>
+        <li>建立当前浏览器内的个人题库。</li>
+        <li>生成每日复习任务和后续复习计划。</li>
+        <li>计算复习进度、完成记录和题目掌握状态。</li>
+        <li>在用户主动点击时打开对应的力扣题目页面。</li>
+      </ul>
+
+      <h2>不会读取或保存的数据</h2>
+      <p>本扩展不提供密码输入框，不读取或保存密码、Session Cookie、CSRF 值、访问令牌、提交代码和运行结果。</p>
+
+      <h2>数据存储与传输</h2>
+      <p>复习状态、反馈历史、计划、设置和个人笔记保存在当前浏览器的 <code>chrome.storage.local</code> 中。本扩展不提供开发者服务器，不会把用户题库、笔记、复习历史或账号标识上传给开发者，也不向第三方分析服务发送数据。</p>
+      <p>本扩展会调用 leetcode.cn 的后端 GraphQL 接口，用于在用户主动连接或同步时读取其已通过题目数据。该请求发生在用户已登录的 leetcode.cn 浏览器会话中。</p>
+
+      <h2>用户控制</h2>
+      <p>用户可以在扩展内主动导出 JSON 数据、解绑账号或删除个人数据。删除个人数据需要二次确认，删除后本地题库、复习历史、笔记、计划、同步历史和账号关联将被清除，且不可由扩展恢复。</p>
+      <p>用户选择解绑并保留数据后，数据会被锁定，只有重新连接原账号后才能查看。</p>
+
+      <h2>权限说明</h2>
+      <ul>
+        <li><code>storage</code>：将题库、复习计划、设置、笔记和相关状态保存在当前浏览器本地。</li>
+        <li><code>alarms</code>：安排自动同步和每日复习提醒。</li>
+        <li><code>notifications</code>：到达提醒时间且今日任务未完成时显示浏览器通知。</li>
+        <li><code>tabs</code>：查找已打开的 leetcode.cn 标签页，打开复习工作台或题目页面。</li>
+        <li><code>scripting</code>：当 leetcode.cn 页面尚未注入内容脚本时，注入本扩展自己的脚本以完成用户主动同步。</li>
+        <li><code>https://leetcode.cn/*</code>：仅在力扣中国站页面内读取当前登录用户主动同步所需的题目数据。</li>
+      </ul>
+
+      <h2>联系我们</h2>
+      <p>如需反馈隐私相关问题，请通过扩展商店页面提供的支持邮箱或支持页面联系开发者。</p>
+    </article>
+  </main>
+</body>
+</html>

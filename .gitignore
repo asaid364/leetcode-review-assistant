@@ -39,3 +39,4 @@ scripts/
 test/
 AI_HANDOFF.md
 package.json
+dist/
